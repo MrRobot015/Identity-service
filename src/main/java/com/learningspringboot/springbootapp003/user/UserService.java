@@ -1,20 +1,17 @@
 package com.learningspringboot.springbootapp003.user;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
-        
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
     
     public UserDTO createUser (UserDTO newUser){
     
@@ -26,7 +23,7 @@ public class UserService {
         // encode the password
         userEntity.setEncryptedPassword(passwordEncoder.encode(newUserPassword));
         
-        if (userRepository.existsByEmail(newUserEmail)){
+        if (userRepository.findByEmail(newUserEmail).isPresent()){
             throw new RuntimeException("email already exists");
         }else {
             UserDTO createdUserDto = new UserDTO();
