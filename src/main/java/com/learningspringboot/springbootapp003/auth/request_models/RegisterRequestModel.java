@@ -1,9 +1,9 @@
-package com.learningspringboot.springbootapp003.user.request_models;
+package com.learningspringboot.springbootapp003.auth.request_models;
 
 import lombok.Data;
 
 @Data
-public class UserDetailsRequestModel {
+public class RegisterRequestModel {
     private String firstName;
     private String lastName;
     private String email;

@@ -1,37 +1,37 @@
 package com.learningspringboot.springbootapp003.user;
 
+import com.learningspringboot.springbootapp003.user.response_models.UserResponseModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
     
     
-    public UserDTO createUser (UserDTO newUser){
+    public List<UserResponseModel> getAllUsers() {
     
-        String newUserEmail = newUser.getEmail();
-        String newUserPassword = newUser.getPassword();
+        List<UserEntity> unformattedUserData = userRepository.findAll();
+    
         
-        UserEntity userEntity = new UserEntity();
-        BeanUtils.copyProperties(newUser , userEntity);
-        // encode the password
-        userEntity.setEncryptedPassword(passwordEncoder.encode(newUserPassword));
         
-        if (userRepository.findByEmail(newUserEmail).isPresent()){
-            throw new RuntimeException("email already exists");
-        }else {
-            UserDTO createdUserDto = new UserDTO();
-            UserEntity createdUser = userRepository.save(userEntity);
-            BeanUtils.copyProperties(createdUser,createdUserDto);
-            return createdUserDto;
-        }
+        List<UserResponseModel> formattedUserData =  new ArrayList<>();
         
+        unformattedUserData.forEach(userEntity -> {
+             UserResponseModel userResponseModel = new UserResponseModel();
+             BeanUtils.copyProperties(userEntity,userResponseModel);
+             formattedUserData.add(userResponseModel);
+        });
+        
+        
+        return formattedUserData;
     }
     
 }
